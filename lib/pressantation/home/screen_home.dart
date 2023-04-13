@@ -93,7 +93,7 @@ class ScreenHome extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0))),
-              height: 500.0,
+              height: MediaQuery.of(context).size.height / .5,
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: ListView(
@@ -102,13 +102,58 @@ class ScreenHome extends StatelessWidget {
                   children: [
                     const Text(
                       "From",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1),
                     ),
                     height10,
                     const TextField(
-                      decoration:
-                          InputDecoration(prefixIcon: Icon(Icons.search)),
-                    )
+                      cursorColor: Colors.grey,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey)),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)))),
+                    ),
+                    height10,
+                    const Text(
+                      "All Languages",
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          letterSpacing: 1),
+                    ),
+                    height10,
+                    ListView.separated(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Card(
+                            
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            color: Colors.black,
+                            child: ListTile(
+                              leading: SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: Image.asset("asset/Images/spain.png")),
+                              title: const Text(
+                                "data",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) => height10,
+                        itemCount: 7)
                   ],
                 ),
               ));
