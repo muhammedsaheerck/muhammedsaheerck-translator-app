@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:translator/application/home/home_provider.dart';
 import 'package:translator/core/core_datas.dart';
 
 class ScreenHome extends StatelessWidget {
@@ -50,11 +52,16 @@ class ScreenHome extends StatelessWidget {
                     )),
                 InkWell(
                   onTap: () {
+                    Provider.of<HomeProvider>(context, listen: false)
+                        .getLanguages();
+
                     modalBottomSheetMenu(context);
                   },
-                  child: const CustomLanguageContainer(
+                  child: CustomLanguageContainer(
                     imageUrl: "asset/Images/spain.png",
-                    countryName: "Spain",
+                    countryName:
+                        Provider.of<HomeProvider>(context, listen: false)
+                            .selctedLanguge,
                   ),
                 ),
               ],
@@ -108,20 +115,29 @@ class ScreenHome extends StatelessWidget {
                           letterSpacing: 1),
                     ),
                     height10,
-                    const TextField(
-                      cursorColor: Colors.grey,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey)),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                    ),
+                    Consumer<HomeProvider>(builder: (context, valuePro, child) {
+                      return TextField(
+                        style: const TextStyle(color: Colors.grey),
+                        controller: valuePro.controller,
+                        onChanged: (value) {
+                          return valuePro.searchLanguges(value);
+                        },
+                        cursorColor: Colors.grey,
+                        decoration: const InputDecoration(
+                            hintText: "search languages",
+                            hintStyle: TextStyle(color: Colors.grey),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey)),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                            ),
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)))),
+                      );
+                    }),
                     height10,
                     const Text(
                       "All Languages",
@@ -131,29 +147,39 @@ class ScreenHome extends StatelessWidget {
                           letterSpacing: 1),
                     ),
                     height10,
-                    ListView.separated(
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Card(
-                            
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            color: Colors.black,
-                            child: ListTile(
-                              leading: SizedBox(
-                                  height: 30,
-                                  width: 30,
-                                  child: Image.asset("asset/Images/spain.png")),
-                              title: const Text(
-                                "data",
-                                style: TextStyle(color: Colors.grey),
+                    Consumer<HomeProvider>(
+                        builder: (context, valueProv, child) {
+                      return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final languge = valueProv.languages[index];
+                            return InkWell(
+                              onTap: () {
+                                valueProv.selectLanguage(languge.language!);
+                                Navigator.of(context).pop();
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                color: Colors.black,
+                                child: ListTile(
+                                  leading: SizedBox(
+                                      height: 30,
+                                      width: 30,
+                                      child: Image.asset(
+                                          "asset/Images/spain.png")),
+                                  title: Text(
+                                    languge.language!,
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) => height10,
-                        itemCount: 7)
+                            );
+                          },
+                          separatorBuilder: (context, index) => height10,
+                          itemCount: valueProv.languages.length);
+                    }),
                   ],
                 ),
               ));
