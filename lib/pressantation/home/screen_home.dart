@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/application/home/home_provider.dart';
 import 'package:translator/core/core_datas.dart';
+import 'package:translator/infrastructure/language_api.dart';
+
+import '../widgets/custom_language_container.dart';
+import '../widgets/custom_textfield_widget.dart';
 
 class ScreenHome extends StatelessWidget {
   const ScreenHome({super.key});
@@ -51,10 +55,10 @@ class ScreenHome extends StatelessWidget {
                       size: 15,
                     )),
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
                     Provider.of<HomeProvider>(context, listen: false)
                         .getLanguages();
-
+                    // await LanguageApiCalls().translateData();
                     modalBottomSheetMenu(context);
                   },
                   child: CustomLanguageContainer(
@@ -184,83 +188,5 @@ class ScreenHome extends StatelessWidget {
                 ),
               ));
         });
-  }
-}
-
-class CustomTextFieldWidget extends StatelessWidget {
-  const CustomTextFieldWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 200,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: TextField(
-            style: TextStyle(color: Colors.white),
-            maxLength: 2300,
-            maxLines: 7,
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-              focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey)),
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                color: Colors.grey,
-              )),
-              counterStyle: TextStyle(
-                color: Colors.grey,
-              ),
-            )),
-      ),
-    );
-  }
-}
-
-class CustomLanguageContainer extends StatelessWidget {
-  final String imageUrl;
-  final String countryName;
-  const CustomLanguageContainer({
-    required this.imageUrl,
-    required this.countryName,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width / 2.5,
-      decoration: BoxDecoration(
-          color: Colors.grey.shade900, borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            SizedBox(
-                height: 25,
-                width: 25,
-                child: Image.asset(
-                  imageUrl,
-                  fit: BoxFit.fill,
-                )),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              countryName,
-              style: const TextStyle(fontSize: 14, color: Colors.white),
-            )
-          ],
-        ),
-      ),
-    );
   }
 }
